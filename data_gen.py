@@ -57,11 +57,11 @@ def save_data(raw_folder=DATA_PATH):
                     labels.append(folder)
 
     pixels = np.array(pixels)
-    labels = np.array(labels)#.reshape(-1,1)
+    labels = np.array(labels)
 
     encoder = LabelBinarizer()
     labels = encoder.fit_transform(labels)
-    print(labels)
+    print(labels.shape)
 
     file = open(DATA_FILE, 'wb')
     # dump information to that file
@@ -71,5 +71,5 @@ def save_data(raw_folder=DATA_PATH):
 
 
 if __name__ == '__main__':
-    # get_data(0)
+    # get_data(500000)
     save_data()

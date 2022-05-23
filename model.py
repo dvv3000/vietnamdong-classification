@@ -43,7 +43,7 @@ def get_model():
     
     x = GlobalAvgPool2D()(d)
     x = BatchNormalization()(x)
-    x = Dropout(0.5)(x)
+    x = Dropout(0.25)(x)
     
     x = Dense(1024, activation='softmax')(x)
 
@@ -51,12 +51,39 @@ def get_model():
     output = Dense(len(CLASS_NAME), activation='softmax')(x)
 
     model = Model(input, output)
+    opt = SGDW(weight_decay=1e-4, learning_rate=0.1, momentum=0.9, nesterov=True)
 
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
     return model
 
+def getDenseNet():
+    densenet_one = DenseNet121(include_top=False, weights='imagenet')
 
+    # Dong bang cac layer
+    for layer in densenet_one.layers:
+        layer.trainable = False
+
+    # Tao model
+    input = Input(shape=IMAGE_SHAPE, name='image_input')
+    x = densenet_one(input)
+
+    # Them cac layer FC va Dropout
+    x =  GlobalAvgPool2D()(x)
+    x = BatchNormalization()(x)
+    x = Dropout(0.5)(x)
+    x = Dense(1024,activation='relu')(x) 
+    x = Dense(512,activation='relu')(x) 
+    x = BatchNormalization()(x)
+    x = Dropout(0.5)(x)
+    x = Dense(10,activation='softmax')(x) #FC-layer
+    # Compile
+    model = Model(inputs=input, outputs=x)
+    opt = SGDW(weight_decay=1e-4, learning_rate=0.1, momentum=0.9, nesterov=True)
+
+    model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+
+    return model
 if __name__ == '__main__':
-    model = get_model()
+    model = getDenseNet()
     model.summary()

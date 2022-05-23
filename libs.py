@@ -16,15 +16,15 @@ from sklearn.preprocessing import LabelBinarizer
 
 
 from keras.models import Model
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping, LearningRateScheduler
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import  load_model
 
 import tensorflow
 from tensorflow.keras.layers import Input, BatchNormalization, ReLU, Conv2D, Dense, MaxPool2D, AvgPool2D, GlobalAvgPool2D, Concatenate, Dropout
-
-
-
+from tensorflow.keras.optimizers import Adam, SGD
+from tensorflow.keras.applications import DenseNet121
+from tensorflow_addons.optimizers import SGDW
 
 
 # from keras.utils.data_utils import get_file

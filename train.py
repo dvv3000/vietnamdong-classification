@@ -12,8 +12,8 @@ def load_data():
     # close the file
     file.close()
 
-    print(pixels.shape)
-    print(labels.shape)
+    print("images shape", pixels.shape)
+    print("labels shape", labels.shape)
 
 
     return pixels, labels
@@ -37,15 +37,23 @@ def plot_model_history(model_history, acc='accuracy', val_acc='val_accuracy'):
     #plt.show()
     plt.savefig('roc.png')
 
+def lr_scheduler(epoch, lr):
+    if epoch > 0.75 * EPOCHS:
+        return 0.001
+    elif epoch > 0.5 * EPOCHS:
+        return 0.01
+    return lr
 
+
+    
 if __name__ == '__main__':
-
+    random.seed(42)
     X, y = load_data()
-    random.shuffle(X)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=100)
+    # random.shuffle(X)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    print(X_train.shape)
-    print(y_train.shape)
+    print("Train images shape", X_train.shape)
+    print("Train label shape", y_train.shape)
 
 
     model = get_model()
@@ -53,7 +61,9 @@ if __name__ == '__main__':
 
     filepath = WEIGHT_PATH + "/" + "weights-{epoch:02d}-{val_accuracy:.2f}.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
-    callbacks_list = [checkpoint]
+    earlystopping = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+    lrScheduler = LearningRateScheduler(lr_scheduler, verbose=1)
+    callbacks_list = [checkpoint, earlystopping]
 
 
     aug = ImageDataGenerator(rotation_range=20, zoom_range=0.1,
@@ -66,10 +76,9 @@ if __name__ == '__main__':
 
     aug_val = ImageDataGenerator(rescale = 1./255)
 
-
-    history = model.fit_generator(aug.flow(X_train, y_train, batch_size=BATCH_SIZE),
+    history = model.fit(aug.flow(X_train, y_train, batch_size=BATCH_SIZE),
                                 epochs = EPOCHS,
-                                validation_data = aug.flow(X_test, y_test, batch_size=BATCH_SIZE),
+                                validation_data = aug_val.flow(X_test, y_test, batch_size=BATCH_SIZE),
                                 callbacks = callbacks_list)
 
     plot_model_history(history)
