@@ -1,6 +1,6 @@
 from libs import *
 from configs import *
-from model import get_model
+from model import *
 
 
 def load_data():
@@ -44,7 +44,18 @@ def lr_scheduler(epoch, lr):
         return 0.01
     return lr
 
+def confusionMatrix(model, X_test, y_test):
+    Y_pred = model.predict(X_test)
 
+    Y_pred = np.argmax(Y_pred, axis=1)
+    Y_true = np.argmax(y_test, axis=1)
+
+    cm = confusion_matrix(Y_true, Y_pred)
+    plt.figure(figsize=(12, 12))
+    ax = sns.heatmap(cm, cmap="rocket_r", fmt=".01f",annot_kws={'size':16}, annot=True, square=True, xticklabels=CLASS_NAME, yticklabels=CLASS_NAME)
+    ax.set_ylabel('Actual', fontsize=20)
+    ax.set_xlabel('Predicted', fontsize=20)
+    plt.show()
     
 if __name__ == '__main__':
     random.seed(42)
@@ -54,33 +65,44 @@ if __name__ == '__main__':
 
     print("Train images shape", X_train.shape)
     print("Train label shape", y_train.shape)
-
-
+  
+    for r in range(10):
+        print(CLASS_NAME[np.argmax(y_test[r])])
+        cv2.imshow('abc', X_test[r])
+        cv2.waitKey(0)
+        cv2.destroyAllWindows() 
+        
+    # model = getDenseNet()
     model = get_model()
     model.summary()
+    sgd = SGD(lr=0.1, decay=1e-4, momentum=0.9, nesterov=True)
+
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
     filepath = WEIGHT_PATH + "/" + "weights-{epoch:02d}-{val_accuracy:.2f}.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
     earlystopping = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
     lrScheduler = LearningRateScheduler(lr_scheduler, verbose=1)
-    callbacks_list = [checkpoint, earlystopping]
+    callbacks_list = [checkpoint]
 
 
-    aug = ImageDataGenerator(rotation_range=20, zoom_range=0.1,
-        rescale = 1./255,
-        width_shift_range = 0.1,
-        height_shift_range = 0.1,
-        horizontal_flip = True,
-        brightness_range = [0.2, 1.5],
-        fill_mode = "nearest")
+    train_datagen = ImageDataGenerator(
+            width_shift_range=0.1,
+            height_shift_range=0.1,
+            horizontal_flip=True,
+            brightness_range = [0.2, 1.5],
+            fill_mode='nearest',
+            featurewise_center=True,
+            featurewise_std_normalization=True)
 
-    aug_val = ImageDataGenerator(rescale = 1./255)
+    test_datagen = ImageDataGenerator(
+            featurewise_center=True,
+            featurewise_std_normalization=True)
 
-    history = model.fit(aug.flow(X_train, y_train, batch_size=BATCH_SIZE),
-                                epochs = EPOCHS,
-                                validation_data = aug_val.flow(X_test, y_test, batch_size=BATCH_SIZE),
-                                callbacks = callbacks_list)
+    history = model.fit(train_datagen.flow(X_train, y_train, batch_size=BATCH_SIZE),
+                                    epochs = EPOCHS,
+                                    validation_data = test_datagen.flow(X_test, y_test, batch_size=BATCH_SIZE),
+                                    callbacks = callbacks_list)
 
-    plot_model_history(history)
-
-    model.save("model.h5")
+    # plot_model_history(history)
+    

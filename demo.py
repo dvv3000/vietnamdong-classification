@@ -1,16 +1,12 @@
 from configs import *
 from libs import *
-from model import get_model
+from model import *
+from train import *
 
 
-if __name__ == "__main__":
+def demoByCam(model):
     cap = cv2.VideoCapture(0)
 
-    # Dinh nghia class
-
-
-    my_model = get_model()
-    my_model.load_weights("weights-19-1.00.hdf5")
 
     while(True):
         # Capture frame-by-frame
@@ -18,19 +14,19 @@ if __name__ == "__main__":
         ret, image_org = cap.read()
         if not ret:
             continue
-        image_org = cv2.resize(image_org, dsize=None,fx=0.5,fy=0.5)
+        image_org = cv2.resize(image_org, dsize=None, fx=0.5, fy=0.5)
         # Resize
         image = image_org.copy()
         image = cv2.resize(image, dsize=(128, 128))
-        image = image.astype('float')*1./255
+        image = image / 255
         # Convert to tensor
         image = np.expand_dims(image, axis=0)
 
         # Predict
-        predict = my_model.predict(image)
-        print("This picture is: ", class_name[np.argmax(predict[0])], (predict[0]))
+        predict = model.predict(image)
+        print("This picture is: ", CLASS_NAME[np.argmax(predict[0])], (predict[0]))
         print(np.max(predict[0],axis=0))
-        if (np.max(predict)>=0.8) and (np.argmax(predict[0])!=0):
+        if (np.max(predict[0])>= 0.6):
 
             # Show image
             font = cv2.FONT_HERSHEY_SIMPLEX
@@ -39,7 +35,7 @@ if __name__ == "__main__":
             color = (0, 255, 0)
             thickness = 2
 
-            cv2.putText(image_org, class_name[np.argmax(predict)], org, font,
+            cv2.putText(image_org, CLASS_NAME[np.argmax(predict[0])], org, font,
                         fontScale, color, thickness, cv2.LINE_AA)
 
         cv2.imshow("Picture", image_org)
@@ -50,3 +46,21 @@ if __name__ == "__main__":
     # When everything done, release the capture
     cap.release()
     cv2.destroyAllWindows()
+
+
+
+if __name__ == "__main__":
+    # model = getDenseNet()
+    model = get_model()
+    model.load_weights(WEIGHT_FILE)
+
+
+    # X, y = load_data()
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # confusionMatrix(model, X_test / 255, y_test)
+
+    demoByCam(model)
+
+
+    
+   

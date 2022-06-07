@@ -45,16 +45,14 @@ def save_data(raw_folder=DATA_PATH):
     pixels = []
     labels = []
 
+    
     # Lặp qua các folder con trong thư mục raw
-    for folder in os.listdir(raw_folder):
-        if folder != '.DS_Store':
-            print("Folder=", folder)
-            # Lặp qua các file trong từng thư mục chứa các em
-            for file in os.listdir(raw_folder + "/" + folder):
-                if file != '.DS_Store':
-                    print("File=", file)
-                    pixels.append(cv2.resize(cv2.imread(raw_folder + "/" + folder + "/" + file), dsize=dest_size))
-                    labels.append(folder)
+    for folder in CLASS_NAME:
+        print("Folder=", folder)
+        for file in os.listdir(raw_folder + "/" + folder):
+            if file != '.DS_Store':
+                pixels.append(cv2.resize(cv2.imread(raw_folder + "/" + folder + "/" + file), dsize=dest_size))
+                labels.append(folder)
 
     pixels = np.array(pixels)
     labels = np.array(labels)
@@ -70,6 +68,10 @@ def save_data(raw_folder=DATA_PATH):
     file.close()
 
 
+
+
 if __name__ == '__main__':
-    # get_data(500000)
+    # get_data(100000)
     save_data()
+
+    
