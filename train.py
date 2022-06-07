@@ -34,7 +34,7 @@ def plot_model_history(model_history, acc='accuracy', val_acc='val_accuracy'):
     axs[1].set_xlabel('Epoch')
     axs[1].set_xticks(np.arange(1, len(model_history.history['loss']) + 1), len(model_history.history['loss']) / 10)
     axs[1].legend(['train', 'val'], loc='best')
-    #plt.show()
+    plt.show()
     plt.savefig('roc.png')
 
 def lr_scheduler(epoch, lr):
@@ -92,12 +92,10 @@ if __name__ == '__main__':
             horizontal_flip=True,
             brightness_range = [0.2, 1.5],
             fill_mode='nearest',
-            featurewise_center=True,
-            featurewise_std_normalization=True)
+            rescale=1./255,
+            )
 
-    test_datagen = ImageDataGenerator(
-            featurewise_center=True,
-            featurewise_std_normalization=True)
+    test_datagen = ImageDataGenerator(rescale=1./255,)
 
     history = model.fit(train_datagen.flow(X_train, y_train, batch_size=BATCH_SIZE),
                                     epochs = EPOCHS,
@@ -105,4 +103,4 @@ if __name__ == '__main__':
                                     callbacks = callbacks_list)
 
     # plot_model_history(history)
-    
+    confusionMatrix(model, X_test/255, y_test)
