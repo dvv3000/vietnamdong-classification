@@ -45,9 +45,6 @@ def get_model():
     x = BatchNormalization()(x)
     x = Dropout(0.5)(x)
     
-    # x = Dense(1024, activation='relu')(x)
-
-    # x = Dense(512, activation='relu')(x)
     output = Dense(len(CLASS_NAME), activation='softmax')(x)
 
     model = Model(input, output)
@@ -84,5 +81,5 @@ def getDenseNet():
 
 
 if __name__ == '__main__':
-    model = getDenseNet()
+    model = get_model()
     model.summary()

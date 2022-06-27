@@ -60,8 +60,8 @@ def confusionMatrix(model, X_test, y_test):
 if __name__ == '__main__':
     random.seed(42)
     X, y = load_data()
-    # random.shuffle(X)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_t, y_train, y_t = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_test, X_val, y_test, y_val = train_test_split(Xt, yt, test_size=0.5, random_state=42)
 
     print("Train images shape", X_train.shape)
     print("Train label shape", y_train.shape)
@@ -99,7 +99,7 @@ if __name__ == '__main__':
 
     history = model.fit(train_datagen.flow(X_train, y_train, batch_size=BATCH_SIZE),
                                     epochs = EPOCHS,
-                                    validation_data = test_datagen.flow(X_test, y_test, batch_size=BATCH_SIZE),
+                                    validation_data = test_datagen.flow(X_val, y_val, batch_size=BATCH_SIZE),
                                     callbacks = callbacks_list)
 
     # plot_model_history(history)
