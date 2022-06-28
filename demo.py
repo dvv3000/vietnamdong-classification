@@ -26,7 +26,7 @@ def demoByCam(model):
         predict = model.predict(image)
         print("This picture is: ", CLASS_NAME[np.argmax(predict[0])], (predict[0]))
         print(np.max(predict[0],axis=0))
-        if (np.max(predict[0])>= 0.6):
+        if (np.max(predict[0])>= 0.8):
 
             # Show image
             font = cv2.FONT_HERSHEY_SIMPLEX
@@ -47,7 +47,24 @@ def demoByCam(model):
     cap.release()
     cv2.destroyAllWindows()
 
+def showPredict(model, dataset):
+    ncols = 5
+    nrows = int(len(dataset) / ncols)
+    fig, axs = plt.subplots(nrows, ncols, figsize = (20, 50))
+    for i in range(nrows):
+        for j in range(ncols):
+            image = dataset[i+j]
+            image = image / 255
+            # Convert to tensor
+            image = np.expand_dims(image, axis=0)
+            predict = model.predict(image)
 
+            img = cv2.cvtColor(np.float32(image[0]), cv2.COLOR_BGR2RGB)
+            axs[i, j].imshow(img)
+            axs[i, j].axis('off')
+            axs[i, j].set_title(CLASS_NAME[np.argmax(predict[0])])
+    
+    plt.show()
 
 if __name__ == "__main__":
     model = get_model()
@@ -56,11 +73,12 @@ if __name__ == "__main__":
     # calculate the confusion matrix
     X, y = load_data()
     X_train, X_t, y_train, y_t = train_test_split(X, y, test_size=0.2, random_state=30)
-    X_test, X_val, y_test, y_val = train_test_split(X_t, y_t, test_size=0.5, random_state=30)
+    X_test, X_val, y_test, y_val = train_test_split(X_t, y_t, test_size=0.75, random_state=30)
     confusionMatrix(model, X_test / 255, y_test)
 
 
-    demoByCam(model)
+    # demoByCam(model)
+    showPredict(model, X_test[0:30])
 
 
     

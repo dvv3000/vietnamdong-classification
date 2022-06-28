@@ -1,7 +1,7 @@
 DATA_PATH = "H:/data"
 DATA_FILE = '../data/pix.data'
 
-WEIGHT_FILE = '../weights/weights-45-0.98.hdf5'
+WEIGHT_FILE = '../weights/best.hdf5'
 
 
 NUMBER_IMAGES = 1000

@@ -28,7 +28,7 @@
  - Chạy file data_gen.py để lưu data vào file .pix giúp load data nhanh hơn.
  ``` python data_gen.py```
  - Train model: ```python train.py```
- - Model đã được nhóm mình train tại đây: <a href="https://drive.google.com/file/d/1DJ_TQqyLcCYFUBTOgwwhWUwKeOLoFDAv/view?usp=sharing"> Download </a>
+ - Model đã được nhóm train tại đây: <a href="https://drive.google.com/file/d/1DJ_TQqyLcCYFUBTOgwwhWUwKeOLoFDAv/view?usp=sharing"> Download </a>
 
 ## ***Demo***
  - Chạy file demo để in ra confusion matrix và chạy demo bằng camera: ``` python demo.py```
