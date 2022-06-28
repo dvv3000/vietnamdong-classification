@@ -23,10 +23,6 @@ from keras.models import  load_model
 import tensorflow
 from tensorflow.keras.layers import Input, BatchNormalization, ReLU, Conv2D, Dense, MaxPool2D, AvgPool2D, GlobalAvgPool2D, Concatenate, Dropout, Flatten
 from tensorflow.keras.optimizers import Adam, SGD
-from tensorflow.keras.applications import DenseNet121, VGG16
+from tensorflow.keras.applications import DenseNet121
 
 
-
-
-
-# from keras.utils.data_utils import get_file

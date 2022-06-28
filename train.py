@@ -57,8 +57,8 @@ def confusionMatrix(model, X_test, y_test):
     ax.set_xlabel('Predicted', fontsize=20)
     plt.show()
     
-if __name__ == '__main__':
-    random.seed(42)
+if __name__ == '__main__':\
+    
     X, y = load_data()
     X_train, X_t, y_train, y_t = train_test_split(X, y, test_size=0.2, random_state=42)
     X_test, X_val, y_test, y_val = train_test_split(Xt, yt, test_size=0.5, random_state=42)
@@ -103,4 +103,4 @@ if __name__ == '__main__':
                                     callbacks = callbacks_list)
 
     # plot_model_history(history)
-    confusionMatrix(model, X_test/255, y_test)
+    # confusionMatrix(model, X_test/255, y_test)

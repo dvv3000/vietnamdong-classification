@@ -50,17 +50,17 @@ def demoByCam(model):
 
 
 if __name__ == "__main__":
-    # model = getDenseNet()
-	model = get_model()
-	model.load_weights(WEIGHT_FILE)
+    model = get_model()
+    model.load_weights(WEIGHT_FILE)
+
+    # calculate the confusion matrix
+    X, y = load_data()
+    X_train, X_t, y_train, y_t = train_test_split(X, y, test_size=0.2, random_state=30)
+    X_test, X_val, y_test, y_val = train_test_split(X_t, y_t, test_size=0.5, random_state=30)
+    confusionMatrix(model, X_test / 255, y_test)
 
 
-	X, y = load_data()
-	X_train, X_t, y_train, y_t = train_test_split(X, y, test_size=0.2, random_state=42)
-	X_test, X_val, y_test, y_val = train_test_split(X_t, y_t, test_size=0.5, random_state=42)
-	confusionMatrix(model, X_train / 255, y_train)
-
-    # demoByCam(model)
+    demoByCam(model)
 
 
     

@@ -1,11 +1,10 @@
 DATA_PATH = "H:/data"
 DATA_FILE = '../data/pix.data'
 
-WEIGHT_FILE = '../weights/best.hdf5'
+WEIGHT_FILE = '../weights/weights-45-0.98.hdf5'
 
 
 NUMBER_IMAGES = 1000
-# CLASS_NAME = ['0', '1000', '10000', '100000', '2000', '20000', '200000', '5000', '50000', '500000']
 CLASS_NAME = ['0', '10000', '100000',  '20000',  '5000', '50000']
 
 
